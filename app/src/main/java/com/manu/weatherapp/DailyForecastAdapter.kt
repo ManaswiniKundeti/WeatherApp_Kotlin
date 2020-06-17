@@ -19,7 +19,6 @@ class DailyForecastViewHolder(
     private val descriptionText :TextView = view.findViewById(R.id.descriptionText)
 
     fun bind(dailyForecast : DailyForecast){
-        //tempText.text = dailyForecast.temp.toString()
         tempText.text = dailyForecast.temp.formatTempForDisplay(tempDisplaySettingManager.getTempDisplaySetting())
         descriptionText.text = dailyForecast.description
     }
@@ -70,9 +69,7 @@ class DailyForecastAdapter(
     }
 
     /**
-     * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the [ViewHolder.itemView] to reflect the item at the given
-     * position.
+     * Called by RecyclerView to display the data at the specified position.
      * */
     override fun onBindViewHolder(holder: DailyForecastViewHolder, position: Int) {
         holder.bind(getItem(position))

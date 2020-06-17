@@ -14,7 +14,7 @@ class ForecastRepository {
 
     //Load random temp values and description
     fun loadForecast(zipcode : String){
-        val randomValues = List(10){ Random.nextFloat().rem(100) * 100 }
+        val randomValues = List(15){ Random.nextFloat().rem(100) * 100 }
         val forecastItems = randomValues.map {temp ->
             DailyForecast(temp,getTempDescription(temp))
         }
