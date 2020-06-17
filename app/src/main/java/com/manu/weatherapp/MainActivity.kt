@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.navigation.findNavController
 import com.manu.weatherapp.forecast.CurrentForecastFragment
+import com.manu.weatherapp.forecast.CurrentForecastFragmentDirections
 import com.manu.weatherapp.location.LocationEntryFragment
+import com.manu.weatherapp.location.LocationEntryFragmentDirections
 
 
 class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTENDS
@@ -19,11 +22,6 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
 
         tempDisplaySettingManager = TempDisplaySettingManager(this)
 
-        /** Contains  FRAGMENTS */
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.fragmentContainer, LocationEntryFragment())
-            .commit()
     }
 
     //create menu
@@ -46,17 +44,14 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
 
     // Navigate to Current forecast along with entered zipcode
     override fun navigateToCurrentForecast(zipcode: String) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, CurrentForecastFragment.newInstance(zipcode))
-            .commit()
+        val action = LocationEntryFragmentDirections.actionLocationEntryFragmentToCurrentForecastFragment2()
+        //method on an activity to get access to nav controller within the activity
+        findNavController(R.id.nav_host_fragment_container).navigate(action)
     }
 
     // Navigate back to Location entry
     override fun navigateToLocationEntry() {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, LocationEntryFragment())
-            .commit()
+        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment2()
+        findNavController(R.id.nav_host_fragment_container).navigate(action)
     }
 }
