@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toolbar
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.manu.weatherapp.details.ForecastDetailsFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragmentDirections
@@ -22,6 +25,10 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
         setContentView(R.layout.activity_main)
 
         tempDisplaySettingManager = TempDisplaySettingManager(this)
+
+        val navController = findNavController(R.id.nav_host_fragment_container)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setupWithNavController(navController,appBarConfiguration)
 
     }
 
