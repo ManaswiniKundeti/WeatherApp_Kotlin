@@ -12,10 +12,10 @@ fun formatTempForDisplay(temp : Float) : String {
 
 fun Float.formatTempForDisplay(tempDisplaySetting: TempDisplaySetting): String {
     return when (tempDisplaySetting) {
-        TempDisplaySetting.Fahrenheit -> String.format("%.2f F", this)
+        TempDisplaySetting.Fahrenheit -> String.format("%.2f "+ "\u2109", this)
         TempDisplaySetting.Celsius -> {
             val temp = (this - 32f) * (5f/9f)
-            String.format("%.2f C", temp)
+            String.format("%.2f "+ "\u2103", temp)
         }
     }
 }
