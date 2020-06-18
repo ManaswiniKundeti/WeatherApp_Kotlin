@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.navigation.findNavController
+import com.manu.weatherapp.details.ForecastDetailsFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragmentDirections
 import com.manu.weatherapp.location.LocationEntryFragment
@@ -54,4 +55,11 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
         val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment2()
         findNavController(R.id.nav_host_fragment_container).navigate(action)
     }
+
+    override fun naviagteToForecastDetails(forecast: DailyForecast) {
+        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp, forecast.description)
+        findNavController(R.id.nav_host_fragment_container).navigate(action)
+    }
+
+
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.manu.weatherapp.*
 
-import com.manu.weatherapp.details.ForecastDetailsActivity
+import com.manu.weatherapp.details.ForecastDetailsFragment
 
 class CurrentForecastFragment : Fragment() {
 
@@ -69,10 +69,7 @@ class CurrentForecastFragment : Fragment() {
      * Method used to navigate to weather details. temp & desc details passed used Intent
      */
     private fun showForecastDetails(forecast : DailyForecast){
-        val forecastDetailsIntent = Intent(requireContext(), ForecastDetailsActivity::class.java)
-        forecastDetailsIntent.putExtra("key_temp", forecast.temp)
-        forecastDetailsIntent.putExtra("key_description", forecast.description)
-        startActivity(forecastDetailsIntent)
+        appNavigator.naviagteToForecastDetails(forecast)
     }
 
     /**
