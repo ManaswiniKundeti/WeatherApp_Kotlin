@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -18,14 +19,8 @@ import com.manu.weatherapp.details.ForecastDetailsFragment
 class CurrentForecastFragment : Fragment() {
 
     private val forecastRepository = ForecastRepository()
-    private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
-    //Used to go back to location entry frag
-    private lateinit var appNavigator : AppNavigator
-    override fun onAttach(context: Context) {  //fragment lifecycle method
-        super.onAttach(context)
-        appNavigator = context as AppNavigator  //'as' is used to cast a var to another type
-    }
+    private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +37,12 @@ class CurrentForecastFragment : Fragment() {
         //To go back to location entry frag
         val locationEntryButton = view.findViewById<FloatingActionButton>(R.id.locationEntryButton)
         locationEntryButton.setOnClickListener {
-            appNavigator.navigateToLocationEntry()
+            showLocationEntry()
         }
 
-        //Display Recycler view
+        /**
+         * DISPLAY & UPDATE RECYCLER VIEW
+         */
         val forecastList: RecyclerView = view.findViewById(R.id.forecastList)
         forecastList.layoutManager = LinearLayoutManager(requireContext())
         val dailyForecastAdapter = DailyForecastAdapter(tempDisplaySettingManager){ forecastItem ->
@@ -53,32 +50,27 @@ class CurrentForecastFragment : Fragment() {
         }
         forecastList.adapter = dailyForecastAdapter
 
+        //Create an observer which updates UI in responce to forecast updates
         val weeklyForecastObserver = Observer<List<DailyForecast>>{ forecastItems ->
             //update list adapter
             dailyForecastAdapter.submitList(forecastItems)
         }
         forecastRepository.weeklyForecast.observe(this, weeklyForecastObserver)
-
-        //Load forecast based on zipcode
         forecastRepository.loadForecast(zipcode)
 
         return view
     }
 
-    /**
-     * Method used to navigate to weather details. temp & desc details passed used Intent
-     */
-    private fun showForecastDetails(forecast : DailyForecast){
-        appNavigator.naviagteToForecastDetails(forecast)
+    private fun showLocationEntry(){
+        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment2()
+        findNavController().navigate(action)
     }
 
-    /**
-     * obj scoped to an instance of CurrentForecastFragment
-     *  Similar to static method in Java
-     *
-     *  Creating new instance method is a common pattern for fragments in android
-     *  It is like a factory method for frag. It takes in any arg that is needed for the frag to function correctly
-     */
+    private fun showForecastDetails(forecast : DailyForecast){
+        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp, forecast.description)
+        findNavController().navigate(action)
+    }
+
     companion object {
         const val KEY_ZIPCODE = "key_zipcode"
 

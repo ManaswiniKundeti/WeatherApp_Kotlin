@@ -1,6 +1,5 @@
 package com.manu.weatherapp.details
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -9,7 +8,6 @@ import androidx.navigation.fragment.navArgs
 import com.manu.weatherapp.R
 import com.manu.weatherapp.TempDisplaySettingManager
 import com.manu.weatherapp.formatTempForDisplay
-import com.manu.weatherapp.showTempDisplaySettingDialog
 
 class ForecastDetailsFragment : Fragment() {
 

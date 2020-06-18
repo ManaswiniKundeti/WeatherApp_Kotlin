@@ -1,33 +1,23 @@
 package com.manu.weatherapp.forecast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.manu.weatherapp.*
 
-import com.manu.weatherapp.details.ForecastDetailsFragment
 
 class WeeklyForecastFragment : Fragment() {
 
     private val forecastRepository = ForecastRepository()
 
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
-
-    //Used to go back to location entry frag
-    private lateinit var appNavigator : AppNavigator
-
-    override fun onAttach(context: Context) {  //fragment lifecycle method
-        super.onAttach(context)
-        appNavigator = context as AppNavigator  //'as' is used to cast a var to another type
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +34,12 @@ class WeeklyForecastFragment : Fragment() {
         //To go back to location entry frag
         val locationEntryButton = view.findViewById<FloatingActionButton>(R.id.locationEntryButton)
         locationEntryButton.setOnClickListener {
-            appNavigator.navigateToLocationEntry()
+            showLocationEntry()
         }
 
-        //Display Recycler view
+        /**
+         * DISPLAY & UPDATE RECYCLER VIEW
+         */
         val forecastList: RecyclerView = view.findViewById(R.id.forecastList)
         forecastList.layoutManager = LinearLayoutManager(requireContext())
         val dailyForecastAdapter = DailyForecastAdapter(tempDisplaySettingManager){ forecastItem ->
@@ -55,23 +47,25 @@ class WeeklyForecastFragment : Fragment() {
         }
         forecastList.adapter = dailyForecastAdapter
 
+        //Create an observer which updates UI in responce to forecast updates
         val weeklyForecastObserver = Observer<List<DailyForecast>>{ forecastItems ->
             //update list adapter
             dailyForecastAdapter.submitList(forecastItems)
         }
         forecastRepository.weeklyForecast.observe(this, weeklyForecastObserver)
-
-        //Load forecast based on zipcode
         forecastRepository.loadForecast(zipcode)
 
         return view
     }
 
-    /**
-     * Method used to navigate to weather details. temp & desc details passed used Intent
-     */
+    private fun showLocationEntry(){
+        val action = WeeklyForecastFragmentDirections.actionWeeklyForecastFragmentToLocationEntryFragment()
+        findNavController().navigate(action)
+    }
+
     private fun showForecastDetails(forecast : DailyForecast){
-        appNavigator.naviagteToForecastDetails(forecast)
+        val action = WeeklyForecastFragmentDirections.actionWeeklyForecastFragmentToForecastDetailsFragment(forecast.temp, forecast.description)
+        findNavController().navigate(action)
     }
 
     /**

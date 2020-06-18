@@ -5,18 +5,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.manu.weatherapp.details.ForecastDetailsFragment
-import com.manu.weatherapp.forecast.CurrentForecastFragment
-import com.manu.weatherapp.forecast.CurrentForecastFragmentDirections
-import com.manu.weatherapp.location.LocationEntryFragment
 
 
-class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTENDS
+
+class MainActivity : AppCompatActivity() {  // ':' here means EXTENDS
 
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
@@ -53,24 +49,4 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    // Navigate to Current forecast along with entered zipcode
-    override fun navigateToCurrentForecast(zipcode: String) {
-//        val action = LocationEntryFragmentDirections.actionLocationEntryFragmentToCurrentForecastFragment2()
-//        //method on an activity to get access to nav controller within the activity
-//        findNavController(R.id.nav_host_fragment_container).navigate(action)
-    }
-
-    // Navigate back to Location entry
-    override fun navigateToLocationEntry() {
-        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment2()
-        findNavController(R.id.nav_host_fragment_container).navigate(action)
-    }
-
-    override fun naviagteToForecastDetails(forecast: DailyForecast) {
-        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp, forecast.description)
-        findNavController(R.id.nav_host_fragment_container).navigate(action)
-    }
-
-
 }
