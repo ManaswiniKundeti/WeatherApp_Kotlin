@@ -15,13 +15,15 @@ import com.manu.weatherapp.*
 
 import com.manu.weatherapp.details.ForecastDetailsFragment
 
-class CurrentForecastFragment : Fragment() {
+class WeeklyForecastFragment : Fragment() {
 
     private val forecastRepository = ForecastRepository()
+
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
     //Used to go back to location entry frag
     private lateinit var appNavigator : AppNavigator
+
     override fun onAttach(context: Context) {  //fragment lifecycle method
         super.onAttach(context)
         appNavigator = context as AppNavigator  //'as' is used to cast a var to another type
@@ -34,10 +36,10 @@ class CurrentForecastFragment : Fragment() {
 
         tempDisplaySettingManager = TempDisplaySettingManager(requireContext())
 
-        val zipcode = arguments?.getString(KEY_ZIPCODE) ?: ""
-
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_current_forecast, container, false)
+        val view = inflater.inflate(R.layout.fragment_weekly_forecast, container, false)
+
+        val zipcode = arguments?.getString(KEY_ZIPCODE) ?: ""
 
         //To go back to location entry frag
         val locationEntryButton = view.findViewById<FloatingActionButton>(R.id.locationEntryButton)
@@ -82,9 +84,9 @@ class CurrentForecastFragment : Fragment() {
     companion object {
         const val KEY_ZIPCODE = "key_zipcode"
 
-        fun newInstance (zipcode :String) :CurrentForecastFragment {
+        fun newInstance (zipcode :String) :WeeklyForecastFragment {
 
-            val fragment = CurrentForecastFragment()
+            val fragment = WeeklyForecastFragment()
 
             //Bundle stores key value pairs. Also used with intents
             val args = Bundle()

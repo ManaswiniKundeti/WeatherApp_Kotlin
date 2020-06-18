@@ -9,11 +9,11 @@ import android.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.manu.weatherapp.details.ForecastDetailsFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragment
 import com.manu.weatherapp.forecast.CurrentForecastFragmentDirections
 import com.manu.weatherapp.location.LocationEntryFragment
-import com.manu.weatherapp.location.LocationEntryFragmentDirections
 
 
 class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTENDS
@@ -28,8 +28,12 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
 
         val navController = findNavController(R.id.nav_host_fragment_container)
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setupWithNavController(navController,appBarConfiguration)
 
+        //set App toolbar
+        //findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setupWithNavController(navController,appBarConfiguration)
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setTitle(R.string.app_name)
+        //set bottom navigation view
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setupWithNavController(navController)
     }
 
     //create menu
@@ -52,9 +56,9 @@ class MainActivity : AppCompatActivity(),AppNavigator {  // ':' here means EXTEN
 
     // Navigate to Current forecast along with entered zipcode
     override fun navigateToCurrentForecast(zipcode: String) {
-        val action = LocationEntryFragmentDirections.actionLocationEntryFragmentToCurrentForecastFragment2()
-        //method on an activity to get access to nav controller within the activity
-        findNavController(R.id.nav_host_fragment_container).navigate(action)
+//        val action = LocationEntryFragmentDirections.actionLocationEntryFragmentToCurrentForecastFragment2()
+//        //method on an activity to get access to nav controller within the activity
+//        findNavController(R.id.nav_host_fragment_container).navigate(action)
     }
 
     // Navigate back to Location entry
