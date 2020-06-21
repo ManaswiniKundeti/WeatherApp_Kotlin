@@ -1,24 +1,27 @@
 package com.manu.weatherapp.forecast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.manu.weatherapp.*
-
-import com.manu.weatherapp.details.ForecastDetailsFragment
+import com.manu.weatherapp.api.CurrentWeather
+import com.manu.weatherapp.api.DailyForecast
 
 class CurrentForecastFragment : Fragment() {
 
     private val forecastRepository = ForecastRepository()
+
+    private lateinit var locationRepository: LocationRepository
 
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
@@ -27,12 +30,36 @@ class CurrentForecastFragment : Fragment() {
         savedInstanceState: Bundle?
         ): View? {
 
+        val view = inflater.inflate(R.layout.fragment_current_forecast, container, false)
+
+        val locationName : TextView = view.findViewById(R.id.locationName)
+        val tempText : TextView = view.findViewById(R.id.tempText)
+        val currentForecastIcon = view.findViewById<ImageView>(R.id.currentForecastIcon)
+
         tempDisplaySettingManager = TempDisplaySettingManager(requireContext())
 
         val zipcode = arguments?.getString(KEY_ZIPCODE) ?: ""
 
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_current_forecast, container, false)
+        //Create an observer which updates UI in response to change in weather details
+        val currentWeatherObserver = Observer<CurrentWeather> { weather ->
+            //load image into the imageview
+            val iconId = weather.weather[0].icon
+            currentForecastIcon.load("http://openweathermap.org/img/wn/${iconId}@2x.png")
+            locationName.text = weather.name
+            tempText.text =
+                weather.forecast.temp.formatTempForDisplay(tempDisplaySettingManager.getTempDisplaySetting())
+        }
+        forecastRepository.currentWeather.observe(viewLifecycleOwner, currentWeatherObserver)
+
+        //Create an observer to listen for change in location, When changes, update UI
+        locationRepository = LocationRepository(requireContext())
+        //observe changes to the location
+        val savedLocationObserver = Observer<Location> { savedLocation ->
+            when(savedLocation) {
+                is Location.Zipcode -> forecastRepository.loadCurrentForecast(savedLocation.zipcode)
+            }
+        }
+        locationRepository.savedLocation.observe(viewLifecycleOwner, savedLocationObserver)
 
         //To go back to location entry frag
         val locationEntryButton = view.findViewById<FloatingActionButton>(R.id.locationEntryButton)
@@ -40,34 +67,11 @@ class CurrentForecastFragment : Fragment() {
             showLocationEntry()
         }
 
-        /**
-         * DISPLAY & UPDATE RECYCLER VIEW
-         */
-        val forecastList: RecyclerView = view.findViewById(R.id.forecastList)
-        forecastList.layoutManager = LinearLayoutManager(requireContext())
-        val dailyForecastAdapter = DailyForecastAdapter(tempDisplaySettingManager){ forecastItem ->
-            showForecastDetails(forecastItem)
-        }
-        forecastList.adapter = dailyForecastAdapter
-
-        //Create an observer which updates UI in responce to forecast updates
-        val weeklyForecastObserver = Observer<List<DailyForecast>>{ forecastItems ->
-            //update list adapter
-            dailyForecastAdapter.submitList(forecastItems)
-        }
-        forecastRepository.weeklyForecast.observe(this, weeklyForecastObserver)
-        forecastRepository.loadForecast(zipcode)
-
         return view
     }
 
     private fun showLocationEntry(){
         val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment2()
-        findNavController().navigate(action)
-    }
-
-    private fun showForecastDetails(forecast : DailyForecast){
-        val action = CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp, forecast.description)
         findNavController().navigate(action)
     }
 

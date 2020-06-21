@@ -9,14 +9,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.manu.weatherapp.Location
+import com.manu.weatherapp.LocationRepository
 import com.manu.weatherapp.R
 
 class LocationEntryFragment : Fragment() {
+
+    private lateinit var locationRepository: LocationRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
         ): View? {
+
+        locationRepository = LocationRepository(requireContext())
+
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_location_entry, container, false)
 
@@ -29,6 +36,8 @@ class LocationEntryFragment : Fragment() {
             if(zipcode.length != 5){
                 Toast.makeText(requireContext(), R.string.zipcode_entry_error, Toast.LENGTH_SHORT).show()
             }else{
+                //any time we enter a zipcode, we store it in our locationRepository
+                locationRepository.saveLocation(Location.Zipcode(zipcode))
                 //navigateUp, just goes back to what was there previously
                 findNavController().navigateUp()
             }
