@@ -7,11 +7,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.manu.weatherapp.R
 import com.manu.weatherapp.TempDisplaySettingManager
+import com.manu.weatherapp.databinding.FragmentForecastDetailsBinding
 import com.manu.weatherapp.formatTempForDisplay
 
-class ForecastDetailsFragment : Fragment() {
+class  ForecastDetailsFragment : Fragment() {
 
     private val args:ForecastDetailsFragmentArgs by navArgs()
+
+    private var _binding: FragmentForecastDetailsBinding? = null
+    //this prop only valid between onCreate view and onDestroy view
+    private val binding get() = _binding!!
 
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
 
